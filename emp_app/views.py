@@ -1,3 +1,4 @@
+from http.client import HTTPResponse
 from json import loads
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -17,9 +18,14 @@ def addEmployee(request):
     if request.method == "POST" :
             body = request.body
             data = loads(body) # parse into dictionary object 
-            print(data) 
-            employee = Employee(name="rajat", designation="senior analyst")
+            print(data["name"]) 
+            employee = Employee(name = data["name"], designation = data["designation"] )
             employee.save()
             return JsonResponse(data)
     else:
             return JsonResponse({"error" : "Not found"})
+
+def getAllEmployees(request):
+    employees = Employee.objects.all().values()
+    print(employees[0]["name"])
+    return JsonResponse(employees)
