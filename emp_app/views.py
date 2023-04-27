@@ -28,4 +28,33 @@ def addEmployee(request):
 def getAllEmployees(request):
     employees = Employee.objects.all().values()
     print(employees[0]["name"])
-    return JsonResponse(employees)
+    data = []
+    for emp in employees:
+        data.append(emp)
+
+    return JsonResponse({"data" : data})
+
+def updateEmployee(request, emp_id):
+        print(emp_id)
+        if request.method == "PUT":
+            
+            body = loads(request.body)
+            employee = Employee.objects.get(emp_id = emp_id)
+        
+            for k in body:
+                if k == "name":
+                    employee.name = body['name']
+                elif k == "designation":
+                    employee.designation = body["designation"]
+
+        
+            employee.save()
+       
+        return JsonResponse({"data" : "Success fully updated"})
+
+def deleteEmployee(request, emp_id):
+        if request.method == "DELETE" :
+            employee = Employee.objects.get(emp_id = emp_id)
+            employee.delete()
+       
+        return JsonResponse({"data" : "Successfully deleted"})
